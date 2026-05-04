@@ -8,14 +8,9 @@ export const initWebSocket = (server: any) => {
   wss = new WebSocketServer({ server });
 
   wss.on("connection", (socket) => {
-    console.log("⚡ Client connected to Whale Stream");
+    console.log("⚡ WebSocket connected");
 
-    socket.send(
-      JSON.stringify({
-        type: "connected",
-        message: "Whale stream active",
-      })
-    );
+    socket.send(JSON.stringify({ type: "connected" }));
   });
 
   return wss;
