@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐋 Whale Intelligence Terminal
 
-## Getting Started
+> Real-time blockchain intelligence system that detects large Ethereum transactions, analyzes wallet behavior, and generates predictive market signals through a streaming architecture.
 
-First, run the development server:
+---
+
+# ⚡ Overview
+
+A real-time on-chain analytics platform that transforms raw Ethereum transactions into **smart money signals** and **predictive market insights** using behavioral modeling and WebSocket streaming.
+
+---
+
+# 🚀 What This Project Does
+
+- ⚡ Streams whale transactions in real time
+- 🧠 Tracks wallet behavior over time
+- 📊 Visualizes market flow and volume spikes
+- 🔮 Generates predictive market pressure signals
+- 💰 Converts ETH → USD in real time
+- 📡 Uses WebSockets for instant updates (no polling)
+
+---
+
+# 🧠 System Architecture
+Ethereum Network
+↓
+Blockchain Listener (Whale Detection Engine)
+↓
+PostgreSQL Database (Prisma ORM)
+↓
+WebSocket Event Layer
+↓
+React Frontend Dashboard
+↓
+Smart Money + Predictive Signal Engine
+
+
+---
+
+# 🧠 Intelligence Layer
+
+The system analyzes wallet behavior using:
+
+- Transaction frequency tracking
+- Capital flow size analysis
+- Behavioral repetition patterns
+- Time-based activity clustering
+
+### Output Signals:
+
+| Signal | Meaning |
+|--------|--------|
+| 🚀 Bullish Pressure | Early accumulation detected |
+| 📈 Accumulation | Increasing wallet inflow |
+| ⚖️ Neutral Flow | No strong directional bias |
+| 📉 Weak Signal | Retail-level activity |
+
+---
+
+# 📊 Key Features
+
+## ⚡ Real-Time Streaming
+WebSocket-based architecture replaces polling for instant updates.
+
+## 🧠 Smart Money Detection
+Identifies high-activity wallets based on:
+- frequency
+- volume
+- behavioral consistency
+
+## 🔮 Predictive Engine
+Detects early market shifts using:
+- accumulation patterns
+- momentum acceleration
+- wallet clustering behavior
+
+## 📈 Market Visualization
+- whale volume charts
+- heatmap activity view
+- live transaction feed
+
+---
+
+# 🧰 Tech Stack
+
+### Frontend
+- Next.js (App Router)
+- React
+- TailwindCSS
+
+### Backend
+- Node.js
+- WebSockets (`ws`)
+- Prisma ORM
+
+### Database
+- PostgreSQL (Neon)
+
+### Blockchain Layer
+- Ethereum RPC integration (simulation-ready)
+
+---
+
+# 🧠 Engineering Highlights
+
+- Event-driven architecture (no polling dependency)
+- Real-time streaming system design
+- Behavioral data modeling
+- Full-stack Web3 integration
+- Signal-based analytics engine
+
+---
+
+# 📈 Example Use Case
+
+Detect early whale accumulation before market movement by identifying:
+
+- repeated high-value transactions
+- increasing wallet activity
+- clustered inflows across blocks
+
+---
+
+# ⚙️ Setup
 
 ```bash
+npm install
+npx prisma generate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
