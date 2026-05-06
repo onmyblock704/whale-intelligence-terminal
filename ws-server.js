@@ -2,37 +2,40 @@ const WebSocket = require("ws");
 
 const PORT = process.env.PORT || 8080;
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: PORT });
 
-console.log(`⚡ WebSocket running on port ${8080}`);
+console.log("⚡ WebSocket running on port", PORT);
 
-function broadcast(data) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
-
-wss.on("connection", () => {
+wss.on("connection", (ws) => {
   console.log("📡 Client connected");
+
+  ws.send(JSON.stringify({
+    type: "init",
+    data: { message: "connected to whale stream" }
+  }));
+
+  ws.on("message", (msg) => {
+    console.log("📩 received:", msg.toString());
+  });
 });
 
-/* 🔥 KEEP simulation for now (works in production too) */
+// 🔥 test stream
 setInterval(() => {
-  const types = ["whale_eth", "erc20_transfer", "dex_swap"];
-
-  const type = types[Math.floor(Math.random() * types.length)];
-
   const event = {
-    type,
+    type: "whale_eth",
     data: {
-      hash: "0x" + Math.random().toString(16).slice(2, 14),
-      from: "0x" + Math.random().toString(16).slice(2, 10),
-      value: Math.floor(Math.random() * 100) + " ETH",
+      hash: "0x" + Math.random().toString(16).slice(2),
+      from: "0x" + Math.random().toString(16).slice(2, 8),
+      value: (Math.random() * 100).toFixed(2) + " ETH",
       blockNumber: Math.floor(Math.random() * 10000000),
     },
   };
 
-  broadcast(event);
+  console.log("📤 sending event");
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(event));
+    }
+  });
 }, 2000);

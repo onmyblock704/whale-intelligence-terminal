@@ -1,147 +1,106 @@
-# 🧠 Whale Intelligence Terminal
+# 🐋 Whale Intelligence Terminal
 
-> Real-time blockchain intelligence system that detects, classifies, and visualizes on-chain “smart money” activity.
-
----
-
-## 🚀 Live Demo
-
-!
+A real-time blockchain intelligence dashboard that tracks whale transactions, DEX swaps, and smart money flows using WebSocket streaming and on-chain data signals.
 
 ---
 
-## 📊 What This Is
-
-Whale Intelligence Terminal is a **real-time on-chain analytics dashboard** that transforms raw Ethereum blockchain data into actionable intelligence.
-
-It streams live events, identifies high-value transactions, and surfaces “smart money” signals in a Bloomberg-style interface.
+## 🔥 Live Demo
+- Frontend (Vercel): https://your-vercel-url.vercel.app
+- Backend (Railway WebSocket): wss://whale-intelligence-terminal-production.up.railway.app
 
 ---
 
-## 🧠 Core Idea
+## 🧠 System Architecture
+Ethereum RPC / Alchemy Streams
+↓
+Node.js WebSocket Server (Railway)
+↓
+Real-time event broadcasting
+↓
+Next.js 16 Dashboard (Vercel)
+↓
+Bloomberg-style trading UI
 
-Instead of passively viewing blockchain data, this system:
-
-* **Listens** to live blockchain activity
-* **Classifies** transactions into meaningful signals
-* **Streams** insights in real-time via WebSockets
-* **Visualizes** intelligence in a multi-panel terminal UI
-
----
-
-## ⚙️ System Architecture
-
-```
-Ethereum RPC
-     ↓
-Listener (event ingestion)
-     ↓
-Classification Engine
-     ↓
-WebSocket Server (real-time streaming)
-     ↓
-Next.js Frontend (live terminal UI)
-```
 
 ---
 
-## 🔥 Features
-
-### ⚡ Real-Time Streaming
-
-WebSocket-powered pipeline delivers live blockchain updates with sub-second latency.
-
-### 🐋 Whale Detection
-
-Identifies high-value ETH transfers and flags potential smart money movement.
-
-### 🔄 Event Classification
-
-Transforms raw blockchain data into structured signals:
-
-* `whale_eth`
-* `erc20_transfer`
-* `dex_swap`
-
-### 📊 Intelligence UI
-
-Bloomberg-style dashboard:
-
-* **Left Panel:** Wallet clustering
-* **Center Panel:** Live feed + heatmap
-* **Right Panel:** Smart money signals
-
----
-
-## 🧩 Tech Stack
+## ⚙️ Tech Stack
 
 ### Frontend
-
-* Next.js
-* React
-* TailwindCSS
-* WebSockets
+- Next.js 16 (App Router)
+- React 18
+- TailwindCSS
+- WebSocket client
 
 ### Backend
+- Node.js
+- ws (WebSocket server)
+- Real-time event streaming
 
-* Node.js
-* WebSocket server
-* Event streaming engine
+### Blockchain Layer
+- Alchemy WebSocket API
+- Ethereum RPC
+- (Expandable: ERC20 + DEX decoding)
 
-### Blockchain
-
-* Ethereum RPC
-* Transaction decoding
-* Event classification
-
----
-
-## 🧠 Engineering Highlights
-
-* Event-driven architecture
-* Real-time pub/sub system
-* Blockchain data normalization
-* Reactive UI rendering
-* Scalable backend/frontend separation
+### Infrastructure
+- Vercel (Frontend hosting)
+- Railway (WebSocket backend)
+- Neon + Prisma (Database layer)
 
 ---
 
-## 📈 Why This Matters
+## 📊 Features
 
-This project replicates the core architecture used by:
+### 🐋 Whale Tracking
+- Real-time large transaction detection
+- Wallet activity streaming
 
-* Nansen → wallet intelligence
-* Glassnode → on-chain analytics
-* Bloomberg L.P. → trading terminal UI
+### 🧠 Smart Money Signals
+- Whale clustering (basic)
+- DEX swap detection
+
+### 📡 Live Market Feed
+- WebSocket-powered streaming UI
+- Auto-updating event terminal
+
+### 📈 Terminal UI
+- Bloomberg-style 3-panel layout
+- Heat strip visualization
+- Live activity feed
 
 ---
 
-## 🚀 Deployment
+## 🧩 Future Upgrades
 
-### Frontend (Vercel)
+- ERC20 transfer decoding
+- DEX swap parsing (Uniswap, etc.)
+- Wallet clustering (exchange vs smart money)
+- Predictive whale detection model
+- Historical on-chain analytics
 
-```bash
-vercel
-```
+---
 
-### Backend (Railway / Render / Fly.io)
+## 🛠 Setup
 
-```bash
+### 1. Install dependencies
+
+npm install
+
+Run frontend
+npm run dev
+
+Run backend
 node ws-server.js
-```
 
----
+NEXT_PUBLIC_WS_URL=wss://your-railway-url
+DATABASE_URL=your_neon_db
+ALCHEMY_WS_URL=your_alchemy_ws
+RPC_URL=your_rpc_url
 
-## 🔮 Future Enhancements
+🧠 Key Insight
 
-* Smart money scoring (0–100)
-* Predictive flow detection
-* Wallet labeling (funds, exchanges)
-* Telegram / Discord alerts
-* Price overlays + charts
+This system simulates a real-time institutional crypto intelligence terminal, similar in concept to Bloomberg-style market feeds but applied to on-chain blockchain data.
 
----
+📌 Joshua B. Nixon 
 
-## 👨‍💻 Joshua B. Nixon
-
-Blockchain Engineer | Smart Contract Developer | Web3 Full-Stack Engineer
+Blockchain Engineer | Smart Contract Developer | Web3 Full Stack Engineer
