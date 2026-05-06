@@ -5,7 +5,7 @@ A real-time blockchain intelligence dashboard that tracks whale transactions, DE
 ---
 
 ## 🔥 Live Demo
-- Frontend (Vercel): https://your-vercel-url.vercel.app
+- Frontend (Vercel): https://whale-intelligence-terminal.vercel.app/
 - Backend (Railway WebSocket): wss://whale-intelligence-terminal-production.up.railway.app
 
 ---
