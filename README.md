@@ -1,129 +1,147 @@
-# 🐋 Whale Intelligence Terminal
+# 🧠 Whale Intelligence Terminal
 
-> Real-time blockchain intelligence system that detects large Ethereum transactions, analyzes wallet behavior, and generates predictive market signals through a streaming architecture.
-
----
-
-# ⚡ Overview
-
-A real-time on-chain analytics platform that transforms raw Ethereum transactions into **smart money signals** and **predictive market insights** using behavioral modeling and WebSocket streaming.
+> Real-time blockchain intelligence system that detects, classifies, and visualizes on-chain “smart money” activity.
 
 ---
 
-# 🚀 What This Project Does
+## 🚀 Live Demo
 
-- ⚡ Streams whale transactions in real time
-- 🧠 Tracks wallet behavior over time
-- 📊 Visualizes market flow and volume spikes
-- 🔮 Generates predictive market pressure signals
-- 💰 Converts ETH → USD in real time
-- 📡 Uses WebSockets for instant updates (no polling)
+!
 
 ---
 
-# 🧠 System Architecture
-Ethereum Network
-↓
-Blockchain Listener (Whale Detection Engine)
-↓
-PostgreSQL Database (Prisma ORM)
-↓
-WebSocket Event Layer
-↓
-React Frontend Dashboard
-↓
-Smart Money + Predictive Signal Engine
+## 📊 What This Is
 
+Whale Intelligence Terminal is a **real-time on-chain analytics dashboard** that transforms raw Ethereum blockchain data into actionable intelligence.
+
+It streams live events, identifies high-value transactions, and surfaces “smart money” signals in a Bloomberg-style interface.
 
 ---
 
-# 🧠 Intelligence Layer
+## 🧠 Core Idea
 
-The system analyzes wallet behavior using:
+Instead of passively viewing blockchain data, this system:
 
-- Transaction frequency tracking
-- Capital flow size analysis
-- Behavioral repetition patterns
-- Time-based activity clustering
-
-### Output Signals:
-
-| Signal | Meaning |
-|--------|--------|
-| 🚀 Bullish Pressure | Early accumulation detected |
-| 📈 Accumulation | Increasing wallet inflow |
-| ⚖️ Neutral Flow | No strong directional bias |
-| 📉 Weak Signal | Retail-level activity |
+* **Listens** to live blockchain activity
+* **Classifies** transactions into meaningful signals
+* **Streams** insights in real-time via WebSockets
+* **Visualizes** intelligence in a multi-panel terminal UI
 
 ---
 
-# 📊 Key Features
+## ⚙️ System Architecture
 
-## ⚡ Real-Time Streaming
-WebSocket-based architecture replaces polling for instant updates.
-
-## 🧠 Smart Money Detection
-Identifies high-activity wallets based on:
-- frequency
-- volume
-- behavioral consistency
-
-## 🔮 Predictive Engine
-Detects early market shifts using:
-- accumulation patterns
-- momentum acceleration
-- wallet clustering behavior
-
-## 📈 Market Visualization
-- whale volume charts
-- heatmap activity view
-- live transaction feed
+```
+Ethereum RPC
+     ↓
+Listener (event ingestion)
+     ↓
+Classification Engine
+     ↓
+WebSocket Server (real-time streaming)
+     ↓
+Next.js Frontend (live terminal UI)
+```
 
 ---
 
-# 🧰 Tech Stack
+## 🔥 Features
+
+### ⚡ Real-Time Streaming
+
+WebSocket-powered pipeline delivers live blockchain updates with sub-second latency.
+
+### 🐋 Whale Detection
+
+Identifies high-value ETH transfers and flags potential smart money movement.
+
+### 🔄 Event Classification
+
+Transforms raw blockchain data into structured signals:
+
+* `whale_eth`
+* `erc20_transfer`
+* `dex_swap`
+
+### 📊 Intelligence UI
+
+Bloomberg-style dashboard:
+
+* **Left Panel:** Wallet clustering
+* **Center Panel:** Live feed + heatmap
+* **Right Panel:** Smart money signals
+
+---
+
+## 🧩 Tech Stack
 
 ### Frontend
-- Next.js (App Router)
-- React
-- TailwindCSS
+
+* Next.js
+* React
+* TailwindCSS
+* WebSockets
 
 ### Backend
-- Node.js
-- WebSockets (`ws`)
-- Prisma ORM
 
-### Database
-- PostgreSQL (Neon)
+* Node.js
+* WebSocket server
+* Event streaming engine
 
-### Blockchain Layer
-- Ethereum RPC integration (simulation-ready)
+### Blockchain
 
----
-
-# 🧠 Engineering Highlights
-
-- Event-driven architecture (no polling dependency)
-- Real-time streaming system design
-- Behavioral data modeling
-- Full-stack Web3 integration
-- Signal-based analytics engine
+* Ethereum RPC
+* Transaction decoding
+* Event classification
 
 ---
 
-# 📈 Example Use Case
+## 🧠 Engineering Highlights
 
-Detect early whale accumulation before market movement by identifying:
-
-- repeated high-value transactions
-- increasing wallet activity
-- clustered inflows across blocks
+* Event-driven architecture
+* Real-time pub/sub system
+* Blockchain data normalization
+* Reactive UI rendering
+* Scalable backend/frontend separation
 
 ---
 
-# ⚙️ Setup
+## 📈 Why This Matters
+
+This project replicates the core architecture used by:
+
+* Nansen → wallet intelligence
+* Glassnode → on-chain analytics
+* Bloomberg L.P. → trading terminal UI
+
+---
+
+## 🚀 Deployment
+
+### Frontend (Vercel)
 
 ```bash
-npm install
-npx prisma generate
-npm run dev
+vercel
+```
+
+### Backend (Railway / Render / Fly.io)
+
+```bash
+node ws-server.js
+```
+
+---
+
+## 🔮 Future Enhancements
+
+* Smart money scoring (0–100)
+* Predictive flow detection
+* Wallet labeling (funds, exchanges)
+* Telegram / Discord alerts
+* Price overlays + charts
+
+---
+
+## 👨‍💻 Joshua B. Nixon
+
+Blockchain Engineer | Smart Contract Developer | Web3 Full-Stack Engineer

@@ -1,186 +1,234 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { useEffect, useState } from "react";
 
-type Whale = {
-  hash: string;
-  from: string;
-  to: string | null;
-  value: string;
-  blockNumber: number;
+type WhaleEvent = {
+  type: string;
+  data: any;
 };
 
 export default function Home() {
-  const [whales, setWhales] = useState<Whale[]>([]);
-  const [ethPrice, setEthPrice] = useState(3000);
+  const [events, setEvents] = useState<WhaleEvent[]>([]);
+  const [latestBlock, setLatestBlock] = useState<number>(0);
 
-  // ⚡ WebSocket stream
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8080");
 
-    ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
+    ws.onmessage = (msg) => {
+      const event = JSON.parse(msg.data);
 
-      if (msg.type === "whale") {
-        setWhales((prev) => [msg.data, ...prev]);
+      setEvents((prev) => [event, ...prev].slice(0, 80));
+
+      if (event?.data?.blockNumber) {
+        setLatestBlock(event.data.blockNumber);
       }
     };
+
+    ws.onerror = (err) => console.error("WS error:", err);
 
     return () => ws.close();
   }, []);
 
-  // 💰 ETH price
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        );
-        const data = await res.json();
-        setEthPrice(data.ethereum.usd);
-      } catch {}
-    };
+  return (
+    <div className="bg-black text-white min-h-screen font-mono grid grid-cols-12">
 
-    load();
-  }, []);
+      {/* ================= LEFT PANEL ================= */}
+      <div className="col-span-3 border-r border-zinc-800 p-3 space-y-3">
+        <div className="text-xs text-zinc-400 tracking-widest">
+          WALLET CLUSTERS
+        </div>
 
-  // 🧠 SMART MONEY DETECTION
-  const isSmartMoney = (w: Whale) => {
-    const eth = Number(w.value) / 1e18;
-    const usd = eth * ethPrice;
+        <WalletClusters events={events} />
+      </div>
 
-    // rule-based heuristic (can later become ML model)
-    return eth > 50 || usd > 100000;
-  };
+      {/* ================= CENTER PANEL ================= */}
+      <div className="col-span-6 border-r border-zinc-800 p-3 space-y-4">
 
-  // 📊 CHART DATA
-  const chartData = useMemo(() => {
-    const map = new Map<number, number>();
+        <MarketPulse latestBlock={latestBlock} events={events} />
 
-    whales.forEach((w) => {
-      const eth = Number(w.value) / 1e18;
-      const bucket = Math.floor(w.blockNumber / 10) * 10;
+        <HeatStrip events={events} />
 
-      map.set(bucket, (map.get(bucket) || 0) + eth);
-    });
+        <EventFeed events={events} />
+      </div>
 
-    return Array.from(map.entries())
-      .map(([block, value]) => ({ block, value }))
-      .slice(-20);
-  }, [whales]);
+      {/* ================= RIGHT PANEL ================= */}
+      <div className="col-span-3 p-3 space-y-3">
+        <div className="text-xs text-zinc-400 tracking-widest">
+          SMART MONEY SIGNALS
+        </div>
 
-  const totalUsd = useMemo(() => {
-    return whales.reduce((acc, w) => {
-      return acc + (Number(w.value) / 1e18) * ethPrice;
-    }, 0);
-  }, [whales, ethPrice]);
+        <SmartMoneyPanel events={events} />
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   📡 MARKET PULSE (CENTER HEADER)
+========================================================= */
+function MarketPulse({ latestBlock, events }: any) {
+  const whaleCount = events.filter((e: any) =>
+    e.type.includes("whale")
+  ).length;
+
+  const swapCount = events.filter((e: any) =>
+    e.type === "dex_swap"
+  ).length;
 
   return (
-    <div className="h-screen bg-black text-green-200 font-mono flex flex-col">
+    <div className="flex justify-between text-xs border-b border-zinc-800 pb-2">
+      <span className="text-green-400 animate-pulse">
+        ● LIVE ON-CHAIN FEED
+      </span>
 
-      {/* HEADER */}
-      <div className="flex justify-between p-3 border-b border-zinc-800 text-xs">
-        <span className="text-green-400 animate-pulse">
-          ● WHALE INTELLIGENCE TERMINAL
-        </span>
+      <span className="text-zinc-400">
+        Block: {latestBlock || "syncing..."}
+      </span>
 
-        <span>ETH ${ethPrice.toFixed(2)}</span>
+      <span className="text-yellow-400">
+        Whales: {whaleCount} | Swaps: {swapCount}
+      </span>
+    </div>
+  );
+}
 
-        <span className="text-green-400">
-          FLOW ${totalUsd.toFixed(0)}
-        </span>
+/* =========================================================
+   📊 HEAT STRIP (ACTIVITY VISUALIZATION)
+========================================================= */
+function HeatStrip({ events }: any) {
+  return (
+    <div className="flex gap-1 h-10 items-end">
+      {events.slice(0, 40).map((e: any, i: number) => {
+        const intensity =
+          e.type === "whale_eth"
+            ? 100
+            : e.type === "dex_swap"
+            ? 70
+            : 30;
+
+        return (
+          <div
+            key={i}
+            className="w-2 bg-green-500"
+            style={{
+              height: `${intensity}%`,
+              opacity: intensity / 100,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* =========================================================
+   📡 EVENT FEED (CENTER STREAM)
+========================================================= */
+function EventFeed({ events }: any) {
+  return (
+    <div className="space-y-2">
+      {events.map((event: any, i: number) => (
+        <EventCard key={i} event={event} />
+      ))}
+    </div>
+  );
+}
+
+/* =========================================================
+   🐋 EVENT CARD (INTELLIGENCE UNIT)
+========================================================= */
+function EventCard({ event }: any) {
+  const isWhale = event.type === "whale_eth";
+  const isERC20 = event.type === "erc20_transfer";
+  const isSwap = event.type === "dex_swap";
+
+  const style = isWhale
+    ? "border-yellow-500 bg-yellow-900/10"
+    : isERC20
+    ? "border-blue-500 bg-blue-900/10"
+    : "border-purple-500 bg-purple-900/10";
+
+  return (
+    <div className={`p-3 border rounded-md transition ${style}`}>
+      <div className="text-xs text-zinc-400 uppercase">
+        {event.type}
       </div>
 
-      {/* CHART */}
-      <div className="h-48 border-b border-zinc-800 p-2">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData}>
-            <XAxis dataKey="block" stroke="#666" />
-            <YAxis stroke="#666" />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#22c55e"
-              fill="rgba(34,197,94,0.15)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+      <div className="text-sm mt-1">
+        {event.data?.hash?.slice(0, 14)}...
       </div>
 
-      {/* HEADER ROW */}
-      <div className="grid grid-cols-12 text-[11px] text-gray-500 border-b border-zinc-800 p-2">
-        <div className="col-span-3">TX HASH</div>
-        <div className="col-span-2">FROM</div>
-        <div className="col-span-2">TO</div>
-        <div className="col-span-2 text-right">ETH</div>
-        <div className="col-span-2 text-right">USD</div>
-        <div className="col-span-1 text-right">FLAG</div>
-      </div>
+      {isWhale && (
+        <div className="text-yellow-400 text-xs mt-1">
+          🧠 SMART MONEY DETECTED
+        </div>
+      )}
 
-      {/* FEED */}
-      <div className="flex-1 overflow-auto">
-        {whales.map((w) => {
-          const eth = Number(w.value) / 1e18;
-          const usd = eth * ethPrice;
-          const smart = isSmartMoney(w);
+      {isERC20 && (
+        <div className="text-blue-400 text-xs mt-1">
+          ERC-20 FLOW
+        </div>
+      )}
 
-          return (
-            <div
-              key={w.hash}
-              className={`grid grid-cols-12 text-xs p-2 border-b border-zinc-900 transition
-              ${smart ? "bg-yellow-900/20 border-yellow-500/30" : "hover:bg-zinc-900/40"}`}
-            >
+      {isSwap && (
+        <div className="text-purple-400 text-xs mt-1">
+          DEX ACTIVITY
+        </div>
+      )}
+    </div>
+  );
+}
 
-              {/* HASH */}
-              <div className="col-span-3 text-gray-400 truncate">
-                {w.hash}
-              </div>
+/* =========================================================
+   🧠 LEFT PANEL — WALLET CLUSTERS
+========================================================= */
+function WalletClusters({ events }: any) {
+  const whales = events.filter((e: any) =>
+    e.type === "whale_eth"
+  );
 
-              {/* FROM */}
-              <div className="col-span-2">
-                {smart ? "🧠 " : "🟢 "}
-                {w.from.slice(0, 8)}...
-              </div>
+  return (
+    <div className="space-y-2">
+      {whales.slice(0, 8).map((w: any, i: number) => (
+        <div
+          key={i}
+          className="p-2 border border-zinc-800 rounded text-xs"
+        >
+          <div className="text-yellow-400">
+            CLUSTER {i + 1}
+          </div>
+          <div className="text-zinc-400">
+            {w.data.from?.slice(0, 10)}...
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-              {/* TO */}
-              <div className="col-span-2">
-                🔵 {w.to?.slice(0, 8) || "CONTRACT"}...
-              </div>
+/* =========================================================
+   🧠 RIGHT PANEL — SMART MONEY SIGNALS
+========================================================= */
+function SmartMoneyPanel({ events }: any) {
+  const smart = events.filter((e: any) =>
+    e.type === "whale_eth"
+  );
 
-              {/* ETH */}
-              <div className="col-span-2 text-right text-green-400">
-                {eth.toFixed(2)}
-              </div>
-
-              {/* USD */}
-              <div className="col-span-2 text-right text-green-300">
-                ${usd.toFixed(0)}
-              </div>
-
-              {/* FLAG */}
-              <div className="col-span-1 text-right">
-                {smart ? (
-                  <span className="text-yellow-400 animate-pulse">
-                    SMART
-                  </span>
-                ) : (
-                  <span className="text-gray-600">—</span>
-                )}
-              </div>
-
-            </div>
-          );
-        })}
-      </div>
+  return (
+    <div className="space-y-2">
+      {smart.slice(0, 6).map((s: any, i: number) => (
+        <div
+          key={i}
+          className="p-2 border border-yellow-500 bg-yellow-900/10 rounded"
+        >
+          <div className="text-xs text-yellow-400">
+            SMART MONEY ENTRY
+          </div>
+          <div className="text-xs text-zinc-400">
+            {s.data.value} wei
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,25 +1,38 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var ws_1 = require("ws");
-var wss = new ws_1.WebSocketServer({ port: 8080 });
-console.log("⚡ WebSocket running on ws://localhost:8080");
-// 🧪 fake whale generator (for UI testing)
-function generateWhale() {
-    return {
-        type: "whale",
-        data: {
-            hash: "0x" + Math.random().toString(16).slice(2),
-            from: "0x" + Math.random().toString(16).slice(2, 12),
-            to: "0x" + Math.random().toString(16).slice(2, 12),
-            value: (Math.random() * 50 * 1e18).toString(),
-            blockNumber: Math.floor(Math.random() * 1000000),
-        },
-    };
+const WebSocket = require("ws");
+
+const PORT = process.env.PORT || 8080;
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+console.log(`⚡ WebSocket running on port ${8080}`);
+
+function broadcast(data) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
 }
-wss.on("connection", function (socket) {
-    console.log("⚡ Client connected");
-    var interval = setInterval(function () {
-        socket.send(JSON.stringify(generateWhale()));
-    }, 2000);
-    socket.on("close", function () { return clearInterval(interval); });
+
+wss.on("connection", () => {
+  console.log("📡 Client connected");
 });
+
+/* 🔥 KEEP simulation for now (works in production too) */
+setInterval(() => {
+  const types = ["whale_eth", "erc20_transfer", "dex_swap"];
+
+  const type = types[Math.floor(Math.random() * types.length)];
+
+  const event = {
+    type,
+    data: {
+      hash: "0x" + Math.random().toString(16).slice(2, 14),
+      from: "0x" + Math.random().toString(16).slice(2, 10),
+      value: Math.floor(Math.random() * 100) + " ETH",
+      blockNumber: Math.floor(Math.random() * 10000000),
+    },
+  };
+
+  broadcast(event);
+}, 2000);
